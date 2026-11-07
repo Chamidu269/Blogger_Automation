@@ -1,0 +1,54 @@
+name: Daily Blogger Recipe Publisher
+
+on:
+  schedule:
+    # Runs every day at 03:30 UTC = 09:00 AM Sri Lanka / India Standard Time (UTC+5:30)
+    - cron: '30 3 * * *'
+  # Allows you to click "Run workflow" manually from GitHub anytime
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish-recipes:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: blogger-recipe-automation/package-lock.json
+
+      - name: Install Dependencies
+        working-directory: blogger-recipe-automation
+        run: npm ci
+
+      - name: Run 10-Recipe Daily Batch
+        working-directory: blogger-recipe-automation
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_MODEL: gemini-3.5-flash
+          BLOGGER_SECRET_EMAIL: ${{ secrets.BLOGGER_SECRET_EMAIL }}
+          EMAIL_HOST: smtp.gmail.com
+          EMAIL_PORT: 587
+          EMAIL_SECURE: false
+          EMAIL_USER: ${{ secrets.EMAIL_USER }}
+          EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
+          BLOG_NAME: 'Global Flavor Roots'
+          BLOG_AUTHOR: 'Chef & Food Enthusiast'
+          AUTO_GENERATE_IMAGE: false
+          SIMULATION_MODE: false
+        run: npm run daily
+
+      - name: Commit and Push Updated CSV Progress
+        run: |
+          git config --global user.name "Blogger Automation Bot"
+          git config --global user.email "bot@blogger-automation.local"
+          git add blogger-recipe-automation/data/recipes.csv
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update recipe queue: published 10 drafts [skip ci]" && git push)

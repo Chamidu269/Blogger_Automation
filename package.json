@@ -1,0 +1,33 @@
+{
+  "name": "blogger-recipe-automation",
+  "version": "1.0.0",
+  "description": "Automated AI Food Recipe Publisher for Blogger via Email-to-Post",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "daily": "node src/index.js --batch 10",
+    "schedule": "node src/scheduler.js",
+    "schedule:now": "node src/scheduler.js --now",
+    "publish:next": "node src/index.js --one",
+    "preview": "node preview.js",
+    "batch": "node src/index.js --batch 5"
+  },
+  "keywords": [
+    "blogger",
+    "food-blog",
+    "recipe-generator",
+    "automation",
+    "gemini",
+    "ai"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@google/generative-ai": "^0.24.0",
+    "csv-parse": "^5.6.0",
+    "csv-stringify": "^6.5.2",
+    "dotenv": "^16.4.7",
+    "nodemailer": "^6.9.16"
+  }
+}
