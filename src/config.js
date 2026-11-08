@@ -37,6 +37,12 @@ export const config = {
     autoGenerateImage: process.env.AUTO_GENERATE_IMAGE !== 'false', // Defaults to true
   },
 
+  // Batch scheduling
+  batch: {
+    delayMinutes: parseFloat(process.env.BATCH_DELAY_MINUTES || '5'),
+    delaySeconds: parseInt(process.env.BATCH_DELAY_SECONDS || '', 10) || Math.round(parseFloat(process.env.BATCH_DELAY_MINUTES || '5') * 60),
+  },
+
   // Simulation mode (if true, outputs HTML locally to output/ instead of sending email)
   isSimulation: process.env.SIMULATION_MODE === 'true' || !process.env.BLOGGER_SECRET_EMAIL || !process.env.EMAIL_USER,
 };

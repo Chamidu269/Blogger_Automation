@@ -42,6 +42,7 @@ jobs:
           BLOG_AUTHOR: 'Chef & Food Enthusiast'
           AUTO_GENERATE_IMAGE: false
           SIMULATION_MODE: false
+          BATCH_DELAY_MINUTES: 5
         run: npm run daily
 
       - name: Commit and Push Updated CSV Progress

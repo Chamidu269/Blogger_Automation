@@ -60,11 +60,9 @@ async function main() {
       console.log(`ℹ Simulation / preview mode active. Recipe was NOT sent via email and remains QUEUED.`);
     }
 
-    // If batching, wait between posts to avoid Blogger / Google rate limits (default: 30 seconds)
+    // If batching, wait between posts to avoid Blogger / Google rate limits (default: 5 minutes)
     if (i < count - 1) {
-      const delaySeconds = parseInt(process.env.BATCH_DELAY_SECONDS || '30', 10);
-      console.log(`Waiting ${delaySeconds} seconds before next recipe to avoid spam filter rate limits...`);
-      await new Promise(resolve => setTimeout(resolve, delaySeconds * 1000));
+      await waitWithCountdown(config.batch.delaySeconds);
     }
   }
 
@@ -72,6 +70,31 @@ async function main() {
   console.log(`\n============================================================`);
   console.log(`Batch complete! Remaining queued recipes: ${updatedStats.queued}`);
   console.log(`============================================================\n`);
+}
+
+/**
+ * Pauses execution with periodic status updates so the terminal/logs stay active.
+ */
+async function waitWithCountdown(totalSeconds) {
+  let remaining = totalSeconds;
+  const updateInterval = 60; // Log update every 60 seconds
+  const totalMins = (totalSeconds / 60).toFixed(1);
+
+  console.log(`\n⏳ Pacing delay: waiting ${totalMins} minutes (${totalSeconds}s) before dispatching next recipe to ensure natural delivery...`);
+
+  while (remaining > 0) {
+    const sleepFor = Math.min(remaining, updateInterval);
+    await new Promise(resolve => setTimeout(resolve, sleepFor * 1000));
+    remaining -= sleepFor;
+
+    if (remaining > 0) {
+      const mins = Math.floor(remaining / 60);
+      const secs = remaining % 60;
+      console.log(`   ⏳ Delay in progress: ${mins > 0 ? `${mins}m ` : ''}${secs > 0 ? `${secs}s ` : ''}remaining...`);
+    }
+  }
+
+  console.log(`✔ Pacing cooldown complete. Proceeding with next recipe.\n`);
 }
 
 main().catch(err => {
