@@ -1,7 +1,7 @@
 # Run this script in PowerShell to register a daily task in Windows Task Scheduler
 $TaskName = "BloggerDailyRecipePublisher"
 $ScriptPath = "$PSScriptRoot\run_daily_10.bat"
-$Time = "02:00PM"
+$Time = "12:00AM"
 
 Write-Host "Registering Windows Task: $TaskName to run every day at $Time..." -ForegroundColor Cyan
 

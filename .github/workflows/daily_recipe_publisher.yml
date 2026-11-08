@@ -2,8 +2,8 @@ name: Daily Blogger Recipe Publisher
 
 on:
   schedule:
-    # Runs every day at 08:30 UTC = 02:00 PM (14:00) Sri Lanka / India Standard Time (UTC+5:30)
-    - cron: '30 8 * * *'
+    # Runs every day at 18:30 UTC = 12:00 AM (Midnight) Sri Lanka / India Standard Time (UTC+5:30)
+    - cron: '30 18 * * *'
   # Allows you to click "Run workflow" manually from GitHub anytime
   workflow_dispatch:
 
