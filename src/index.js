@@ -60,10 +60,11 @@ async function main() {
       console.log(`ℹ Simulation / preview mode active. Recipe was NOT sent via email and remains QUEUED.`);
     }
 
-    // If batching, wait 5 seconds between posts to avoid rate limiting
+    // If batching, wait between posts to avoid Blogger / Google rate limits (default: 30 seconds)
     if (i < count - 1) {
-      console.log('Waiting 5 seconds before next recipe...');
-      await new Promise(resolve => setTimeout(resolve, 5000));
+      const delaySeconds = parseInt(process.env.BATCH_DELAY_SECONDS || '30', 10);
+      console.log(`Waiting ${delaySeconds} seconds before next recipe to avoid spam filter rate limits...`);
+      await new Promise(resolve => setTimeout(resolve, delaySeconds * 1000));
     }
   }
 
