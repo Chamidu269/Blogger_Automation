@@ -68,10 +68,18 @@ export async function publishToBlogger(postData) {
         destination: `Blogger Drafts (via ${config.blogger.secretEmail})`,
         messageId: info.messageId,
         previewPath,
+        simulated: false,
       };
     } catch (err) {
       console.error(`[Blogger Publisher] Email dispatch failed: ${err.message}`);
       console.log(`[Blogger Publisher] Saved locally at: ${previewPath}`);
+      return {
+        success: false,
+        destination: `Failed - Saved locally (${previewPath})`,
+        error: err.message,
+        previewPath,
+        simulated: true,
+      };
     }
   }
 
@@ -87,5 +95,6 @@ export async function publishToBlogger(postData) {
     success: true,
     destination: `Local Preview (${previewPath})`,
     previewPath,
+    simulated: true,
   };
 }

@@ -23,14 +23,12 @@ jobs:
         with:
           node-version: '22'
           cache: 'npm'
-          cache-dependency-path: blogger-recipe-automation/package-lock.json
+          cache-dependency-path: package-lock.json
 
       - name: Install Dependencies
-        working-directory: blogger-recipe-automation
         run: npm ci
 
       - name: Run 10-Recipe Daily Batch
-        working-directory: blogger-recipe-automation
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GEMINI_MODEL: gemini-3.5-flash
@@ -50,5 +48,5 @@ jobs:
         run: |
           git config --global user.name "Blogger Automation Bot"
           git config --global user.email "bot@blogger-automation.local"
-          git add blogger-recipe-automation/data/recipes.csv
+          git add data/recipes.csv
           git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update recipe queue: published 10 drafts [skip ci]" && git push)

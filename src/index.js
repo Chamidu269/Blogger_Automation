@@ -51,10 +51,14 @@ async function main() {
       country: nextRecipe.Country,
     });
 
-    // 4. Update status in CSV
-    markRecipePublished(nextRecipe['Food Name'], post.title);
-    console.log(`✔ Marked "${nextRecipe['Food Name']}" as PUBLISHED_DRAFT in CSV.`);
-    console.log(`✔ Destination: ${pubResult.destination}`);
+    // 4. Update status in CSV only if genuinely sent to Blogger
+    if (!pubResult.simulated && pubResult.success) {
+      markRecipePublished(nextRecipe['Food Name'], post.title);
+      console.log(`✔ Marked "${nextRecipe['Food Name']}" as PUBLISHED_DRAFT in CSV.`);
+      console.log(`✔ Destination: ${pubResult.destination}`);
+    } else {
+      console.log(`ℹ Simulation / preview mode active. Recipe was NOT sent via email and remains QUEUED.`);
+    }
 
     // If batching, wait 5 seconds between posts to avoid rate limiting
     if (i < count - 1) {
